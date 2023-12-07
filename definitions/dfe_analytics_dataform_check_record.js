@@ -5,8 +5,8 @@ dfeAnalyticsDataform({
     bqProjectName: "teaching-qualifications",
     bqDatasetName: "events_production",
     bqEventsTableName: "events",
-    bqEventsTableNameSpace: "check-the-record-of-a-teacher",
-    urlRegex: "check-the-record-of-a-teacher.education.gov.uk",
+    bqEventsTableNameSpace: "check-a-teachers-record",
+    urlRegex: "check-a-teachers-record.education.go.uk",
     dataSchema: [{
         entityTableName: "search_logs",
         description: "",
