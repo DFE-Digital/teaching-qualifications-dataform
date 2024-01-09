@@ -6,30 +6,7 @@ dfeAnalyticsDataform({
     bqDatasetName: "events_production",
     bqEventsTableName: "events",
     bqEventsTableNameSpace: "check-a-teachers-record",
-    urlRegex: "check-a-teachers-record.education.go.uk",
-    dataSchema: [{
-        entityTableName: "search_logs",
-        description: "",
-        keys: [{
-                keyName: "dsi_user_id",
-                dataType: "integer",
-                description: "",
-            },
-            {
-                keyName: "last_name",
-                dataType: "string",
-                description: "",
-            },
-            {
-                keyName: "date_of_birth",
-                dataType: "string",
-                description: "",
-            },
-            {
-                keyName: "result_count",
-                dataType: "string",
-                description: "",
-            },
-        ],
-    }, ],
+    urlRegex: "check-a-teachers-record.education.gov.uk",
+  transformEntityEvents: false,
+  dataSchema: []
 });
