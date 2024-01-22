@@ -1,0 +1,36 @@
+config {
+    type: "table",
+    description: "CTR event data with time request_paths of interest were completed unpivoted",
+    columns: {
+        session_id: "session id of each query",
+        sign_in: "Date sign in request path was returned",
+        searching: "Date search request path was returned",
+        result_list: "Date result request path was returned",
+        teacher: "Date teacher view request path was returned",
+
+    }
+}
+
+SELECT
+  session_id,
+  sign_in,
+  searching,
+  result_list,
+  DATETIME_DIFF(result_list,searching, MINUTE) AS time_taken
+FROM (
+  SELECT
+    REGEXP_REPLACE(request_path, r".*/check-records/teachers.*",'/check-records/teachers') AS updated_request_path,
+    occurred_at,
+    ARRAY_TO_STRING(value, '--', 'MISSING') AS session_id
+  FROM
+    ${ref("events_check_record")},
+    UNNEST(DATA) AS D ) PIVOT ( MAX(occurred_at) FOR updated_request_path IN (      
+        '/check-records/sign-in' AS sign_in, ---NOT using this as beginning as someone can sign in a day before and start their search 24hours later
+        '/check-records/search' AS searching, ---use this as beginning
+         --'/check-records/teachers' AS teacher,
+        '/check-records/result' AS result_list --use this as end
+ 
+      ) )
+where result_list is not null
+ORDER BY
+  time_taken DESC
