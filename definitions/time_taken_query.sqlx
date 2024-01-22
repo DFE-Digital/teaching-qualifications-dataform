@@ -16,7 +16,7 @@ SELECT
   sign_in,
   searching,
   result_list,
-  DATETIME_DIFF(result_list,searching, MINUTE) AS time_taken
+  DATETIME_DIFF(result_list,searching, SECOND) AS time_taken
 FROM (
   SELECT
     REGEXP_REPLACE(request_path, r".*/check-records/teachers.*",'/check-records/teachers') AS updated_request_path,
