@@ -52,8 +52,55 @@ dfeAnalyticsDataform({
                 keyName: "email",
                 dataType: "string",
                 description: "",
+            },],
+    },
+    {
+        entityTableName: "dsi_users",
+        description: "",
+        keys: [{
+                keyName: "uid",
+                dataType: "string",
+                description: "",
             },
-        ],
-    },],
-}
-);
+            {
+                keyName: "staff",
+                dataType: "string",
+                description: "",
+            },
+            {
+                keyName: "email",
+                dataType: "string",
+                description: "",
+            },],   
+        },
+    {
+        entityTableName: "dsi_user_sessions",
+        description: "",
+        keys: [{
+                keyName: "dsi_user_id",
+                dataType: "string",
+                description: "",
+            },
+            {
+                keyName: "role_id",
+                dataType: "string",
+                description: "",
+            },
+            {
+                keyName: "role_code",
+                dataType: "string",
+                description: "",
+            },
+            {
+                keyName: "organisation_id",
+                dataType: "string",
+                description: "",
+            },
+            {
+                keyName: "organisation_name",
+                dataType: "string",
+                description: "",
+            },],   
+        },
+    ],
+});
