@@ -6,7 +6,7 @@ config {
         sign_in: "Date sign in request path was returned",
         searching: "Date search request path was returned",
         result_list: "Date result request path was returned",
-        teacher: "Date teacher view request path was returned",
+        time_taken_seconds: "time taken from search starting to the result list being produced",
 
     }
 }
@@ -33,4 +33,4 @@ FROM (
       ) )
 where result_list is not null
 ORDER BY
-  time_taken DESC
+  time_taken_seconds DESC
