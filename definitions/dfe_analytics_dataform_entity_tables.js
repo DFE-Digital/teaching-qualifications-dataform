@@ -11,7 +11,7 @@ dfeAnalyticsDataform({
         description: "",
         keys: [{
                 keyName: "dsi_user_id",
-                dataType: "integer",
+                dataType: "string",
                 description: "",
             },
             {
