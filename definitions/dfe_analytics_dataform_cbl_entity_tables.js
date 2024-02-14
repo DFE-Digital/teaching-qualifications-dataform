@@ -1,11 +1,11 @@
 const dfeAnalyticsDataform = require("dfe-analytics-dataform");
 
 dfeAnalyticsDataform({
-    eventSourceName: "entity_tables",
+    eventSourceName: "cbl_entity_tables",
     bqProjectName: "teaching-qualifications",
-    bqDatasetName: "events_production",
+    bqDatasetName: "ccbl_events_production",
     bqEventsTableName: "events",
-    urlRegex: "(?i)(check-a-teachers-record.education.gov.uk|access-your-teaching-qualifications.education.gov.uk)",
+    urlRegex: "(?i)(check-the-childrens-barred-list.education.gov.uk)",
     dataSchema: [{
         entityTableName: "search_logs",
         description: "",
