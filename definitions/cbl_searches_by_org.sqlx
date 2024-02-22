@@ -5,7 +5,7 @@ config {
         id: "id of each search",
         created_at: "Date search was made",
         dsi_user_id: "ID of the organisation",
-        result_count: "count of search results generated",
+        result_returned: "true or false flag of search results generated",
         organisation_name: "name of organisation",
         role_code: "the role of the organisation"
 
@@ -13,7 +13,7 @@ config {
 }
 
 SELECT
-  id, created_at,  a.dsi_user_id, result_count, organisation_name, role_code
+  id, created_at,  a.dsi_user_id, result_returned, organisation_name, role_code
 FROM
   ${ref("search_logs_latest_cbl_entity_tables")} AS a
 LEFT JOIN
