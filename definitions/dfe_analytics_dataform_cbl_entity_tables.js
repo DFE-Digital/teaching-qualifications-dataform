@@ -25,7 +25,7 @@ dfeAnalyticsDataform({
                 description: "",
             },
             {
-                keyName: "result_count",
+                keyName: "result_returned",
                 dataType: "string",
                 description: "",
             },],
