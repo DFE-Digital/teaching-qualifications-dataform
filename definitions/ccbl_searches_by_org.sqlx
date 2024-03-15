@@ -1,6 +1,6 @@
 config {
     type: "table",
-    description: "CBL search data joined with user data to allow deep dives by organisation name",
+    description: "CCBL search data joined with user data to allow deep dives by organisation name",
     columns: {
         id: "id of each search",
         created_at: "Date search was made",
@@ -15,7 +15,7 @@ config {
 SELECT
   id, created_at,  a.dsi_user_id, result_returned, organisation_name, role_code
 FROM
-  ${ref("search_logs_latest_cbl_entity_tables")} AS a
+  ${ref("search_logs_latest_ccbl_entity_tables")} AS a
 LEFT JOIN
   (
 SELECT
@@ -23,7 +23,7 @@ SELECT
   organisation_name,
   role_code
 FROM
-  ${ref("dsi_user_sessions_latest_cbl_entity_tables")}
+  ${ref("dsi_user_sessions_latest_ccbl_entity_tables")}
 GROUP BY
   dsi_user_id,
   organisation_name,

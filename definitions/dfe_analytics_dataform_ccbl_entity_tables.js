@@ -1,7 +1,7 @@
 const dfeAnalyticsDataform = require("dfe-analytics-dataform");
 
 dfeAnalyticsDataform({
-    eventSourceName: "cbl_entity_tables",
+    eventSourceName: "ccbl_entity_tables",
     bqProjectName: "teaching-qualifications",
     bqDatasetName: "ccbl_events_production",
     bqEventsTableName: "events",
