@@ -7,6 +7,7 @@ config {
         searching: "Date search request path was returned",
         result_list: "Date result request path was returned",
         time_taken_seconds: "time taken from search starting to the result list being produced",
+        time_taken_sign_in_seconds: "time taken from sign_in to the result list being produced"
 
     }
 }
