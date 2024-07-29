@@ -8,7 +8,7 @@ config {
         result_count: "count of search results generated",
         organisation_name: "name of organisation",
         role_code: "the role of the organisation",
-        search_type: "indicates if the search was using dob/trn/skipped_trn "
+        search_type: "indicates if the search was using dob/trn/skipped_trn"
 
     }
 }
@@ -28,7 +28,6 @@ FROM
 GROUP BY
   dsi_user_id,
   organisation_name,
-  role_code,
-  search_type) AS b
+  role_code) AS b
 ON
   a.dsi_user_id = b.dsi_user_id
