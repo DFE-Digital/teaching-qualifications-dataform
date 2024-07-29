@@ -29,6 +29,11 @@ dfeAnalyticsDataform({
                             dataType: "string",
                             description: "",
                         },
+                         {
+                            keyName: "search_type",
+                            dataType: "string",
+                            description: "",
+                        },
                     ],
                 },
                 {
