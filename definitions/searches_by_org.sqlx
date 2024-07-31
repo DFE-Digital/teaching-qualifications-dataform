@@ -1,6 +1,6 @@
 config {
     type: "table",
-    description: "CTR search data joined with user data to allow deep dives by organisation name",
+    description: "CTR search data joined with user data to allow deep dives by organisation name. Please note organisations are assigned same dsi_user_id, this needs to be investigated, for now we are using one",
     columns: {
         id: "id of each search",
         created_at: "Date search was made",
@@ -8,26 +8,44 @@ config {
         result_count: "count of search results generated",
         organisation_name: "name of organisation",
         role_code: "the role of the organisation",
-        search_type: "indicates if the search was using dob/trn/skipped_trn"
+        search_type: "indicates if the search was using dob/trn/skipped_trn",
+        search_status: "distinguishes between the first search and the second trn/trnskipped search"
 
     }
 }
 
 SELECT
-  id, created_at,  a.dsi_user_id, result_count, organisation_name, role_code, search_type
+  id,
+  created_at,
+  a.dsi_user_id,
+  result_count,
+  organisation_name,
+  role_code,
+  search_type,
+  CASE
+    WHEN search_type = "personal_details" OR search_type IS NULL THEN 'first search'
+    ELSE 'second search'
+END
+  AS search_status
 FROM
   ${ref("search_logs_latest_entity_tables")} AS a
-LEFT JOIN
-  (
-SELECT
-  dsi_user_id,
-  organisation_name,
-  role_code
-FROM
-  ${ref("dsi_user_sessions_latest_entity_tables")}
-GROUP BY
-  dsi_user_id,
-  organisation_name,
-  role_code) AS b
+LEFT JOIN (
+  WITH
+    ranked_users AS (
+    SELECT
+      dsi_user_id,
+      organisation_name,
+      role_code,
+      ROW_NUMBER() OVER (PARTITION BY dsi_user_id ORDER BY organisation_name) AS rn
+    FROM
+      ${ref("dsi_user_sessions_latest_entity_tables")})
+  SELECT
+    dsi_user_id,
+    organisation_name,
+    role_code
+  FROM
+    ranked_users
+  WHERE
+    rn = 1) AS b
 ON
   a.dsi_user_id = b.dsi_user_id
