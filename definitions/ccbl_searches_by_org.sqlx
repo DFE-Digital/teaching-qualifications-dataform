@@ -13,20 +13,31 @@ config {
 }
 
 SELECT
-  id, created_at,  a.dsi_user_id, result_returned, organisation_name, role_code
-FROM
-  ${ref("search_logs_latest_ccbl_entity_tables")} AS a
-LEFT JOIN
-  (
-SELECT
-  dsi_user_id,
+  id,
+  created_at,
+  a.dsi_user_id,
+  result_returned,
   organisation_name,
   role_code
 FROM
-  ${ref("dsi_user_sessions_latest_ccbl_entity_tables")}
-GROUP BY
-  dsi_user_id,
-  organisation_name,
-  role_code) AS b
+  ${ref("search_logs_latest_ccbl_entity_tables")} AS a
+LEFT JOIN (
+  WITH
+    ranked_users AS (
+    SELECT
+      dsi_user_id,
+      organisation_name,
+      role_code,
+      ROW_NUMBER() OVER (PARTITION BY dsi_user_id ORDER BY organisation_name) AS rn
+    FROM
+      ${ref("dsi_user_sessions_latest_ccbl_entity_tables")})
+SELECT
+    dsi_user_id,
+    organisation_name,
+    role_code
+  FROM
+    ranked_users
+  WHERE
+    rn = 1) AS b
 ON
   a.dsi_user_id = b.dsi_user_id
