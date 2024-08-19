@@ -84,6 +84,26 @@ dfeAnalyticsDataform({
                             dataType: "string",
                             description: "",
                         },
+                        {
+                            keyName: "first_name",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "last_name",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "terms_and_conditions_accepted_at",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "terms_and_conditions_version_accepted",
+                            dataType: "string",
+                            description: "",
+                        },
                     ],
                 },
                 {
@@ -131,6 +151,39 @@ dfeAnalyticsDataform({
                         },
                         {
                             keyName: "auth_provider",
+                            dataType: "string",
+                            description: "",
+                        },{
+                            keyName: "date_of_birth",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "email",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "family_name",
+                            dataType: "string",
+                            description: "",
+                        },{
+                            keyName: "given_name",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "name",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "one_login_verified_birth_date",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "one_login_verified_name",
                             dataType: "string",
                             description: "",
                         },

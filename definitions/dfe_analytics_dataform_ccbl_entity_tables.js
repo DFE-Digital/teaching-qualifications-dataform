@@ -71,7 +71,28 @@ dfeAnalyticsDataform({
                 keyName: "email",
                 dataType: "string",
                 description: "",
-            },],   
+            },
+                                    {
+                            keyName: "first_name",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "last_name",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "terms_and_conditions_accepted_at",
+                            dataType: "string",
+                            description: "",
+                        },
+                        {
+                            keyName: "terms_and_conditions_version_accepted",
+                            dataType: "string",
+                            description: "",
+                        },
+                        ],   
         },
     {
         entityTableName: "dsi_user_sessions",
