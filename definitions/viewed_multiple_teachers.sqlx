@@ -1,0 +1,51 @@
+
+config {
+    type: "table",
+    description: "count of teachers viewed at each session: session identified by using a window function on the CTR event data ",
+    columns: {
+        cleaned_occured_at: "approximate time viewings occured",
+        request_referer: "the teacher searched",
+        request_user_id: "the id of the user that performed the search",
+        teachers_viewed: "how many teachers were viewed approxiamtely in the session"
+
+    }
+}
+
+
+WITH
+  events AS (
+  SELECT
+    *,
+    LAST_VALUE(CASE
+        WHEN request_path = "/check-records/search" THEN occurred_at
+    END
+      IGNORE NULLS) OVER(PARTITION BY request_user_id ORDER BY occurred_at ASC ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS search_last_started_at,
+    FIRST_VALUE(CASE
+        WHEN request_path = "/check-records/search" THEN occurred_at
+    END
+      IGNORE NULLS) OVER(PARTITION BY request_user_id ORDER BY occurred_at ASC ROWS BETWEEN 1 FOLLOWING AND UNBOUNDED FOLLOWING) AS search_next_started_at
+  FROM
+    ${ref("events_check_record")}),
+  viewed_teachers AS (
+  SELECT
+    TIMESTAMP_TRUNC(MIN(occurred_at), MINUTE) AS cleaned_occured_at,
+    request_referer,
+    --anonymised_user_agent_and_ip,
+    request_user_id,
+    COUNT(DISTINCT request_path) AS teachers_viewed
+  FROM
+    events
+  WHERE
+    REGEXP_CONTAINS(request_path, "check-records/teachers")
+    AND events.occurred_at BETWEEN search_last_started_at
+    AND search_next_started_at
+  GROUP BY
+    --TIMESTAMP_TRUNC(occurred_at, MINUTE),
+    request_referer,
+    --anonymised_user_agent_and_ip,
+    request_user_id)
+SELECT
+*
+FROM
+  viewed_teachers 
+  

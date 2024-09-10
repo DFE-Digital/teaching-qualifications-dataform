@@ -1,0 +1,35 @@
+WITH
+  viewed_teachers AS (
+  SELECT
+    TIMESTAMP_TRUNC(occurred_at, MINUTE) as cleaned_occured_at,
+    request_referer,
+    anonymised_user_agent_and_ip,
+    request_user_id,
+    COUNT(DISTINCT request_path) AS teachers_viewed
+  FROM
+    ${ref("events_check_record")}
+  WHERE
+    REGEXP_CONTAINS(request_path, "check-records/teachers")
+  GROUP BY
+    TIMESTAMP_TRUNC(occurred_at, MINUTE),
+    request_referer,
+    anonymised_user_agent_and_ip,
+    request_user_id)
+SELECT
+  a.cleaned_occured_at,
+  a.request_referer,
+  a.anonymised_user_agent_and_ip,
+  a.request_user_id,
+  a.teachers_viewed,
+  b.result_count,
+  b.dsi_user_id
+FROM
+  viewed_teachers AS a
+RIGHT JOIN
+  ${ref("searches_by_org")} AS b
+ON
+  a.request_user_id = b.dsi_user_id
+  and a.cleaned_occured_at = TIMESTAMP_TRUNC(b.created_at, MINUTE)
+WHERE
+  b.result_count NOT IN ("0",
+    "1") and a.request_referer is not null
