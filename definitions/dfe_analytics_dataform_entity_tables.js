@@ -6,6 +6,7 @@ dfeAnalyticsDataform({
             bqDatasetName: "events_production",
             bqEventsTableName: "events",
             urlRegex: "(?i)(check-a-teachers-record.education.gov.uk|access-your-teaching-qualifications.education.gov.uk)",
+            hiddenPolicyTagLocation: "projects/teaching-qualifications/locations/europe-west2/taxonomies/5159319666739647034/policyTags/2606812594222933114",
             dataSchema: [{
                     entityTableName: "search_logs",
                     description: "",
