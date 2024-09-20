@@ -19,11 +19,13 @@ dfeAnalyticsDataform({
                     keyName: "last_name",
                     dataType: "string",
                     description: "",
+                    hidden: true,
                 },
                 {
                     keyName: "date_of_birth",
                     dataType: "string",
                     description: "",
+                    hidden:true,
                 },
                 {
                     keyName: "result_returned",
@@ -54,6 +56,7 @@ dfeAnalyticsDataform({
                     keyName: "email",
                     dataType: "string",
                     description: "",
+                    hidden: true,
                 },
             ],
         },
@@ -64,6 +67,7 @@ dfeAnalyticsDataform({
                     keyName: "uid",
                     dataType: "string",
                     description: "",
+                    hidden: true,
                 },
                 {
                     keyName: "staff",
@@ -74,16 +78,19 @@ dfeAnalyticsDataform({
                     keyName: "email",
                     dataType: "string",
                     description: "",
+                    hidden:true,
                 },
                 {
                     keyName: "first_name",
                     dataType: "string",
                     description: "",
+                    hidden: true,
                 },
                 {
                     keyName: "last_name",
                     dataType: "string",
                     description: "",
+                    hidden: true,
                 },
                 {
                     keyName: "terms_and_conditions_accepted_at",
