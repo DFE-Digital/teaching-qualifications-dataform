@@ -1,0 +1,53 @@
+config {
+    type: "table",
+    description: "Cleaned up request referrer table, using the events table and focued on referrers to the sign in page, referrers are grouped and labelled with human readible labels to allow better understanding of the source of users to CCBL",
+    columns: {
+        Occured_At: "date of event",
+        request_uuid: "ID of user",
+        request_referer: "url from which the user is coming from, null if this isn't captured",
+        request_path: "url to which the user lands, in this case the sign in page",
+        WEB_TRAFFIC_AGGR: "the label assigned to the request referrer to allow better understanding of where users are coming from"
+
+    }
+}
+
+
+
+SELECT
+date(occurred_at) as Occured_At,
+request_uuid,
+  request_referer,
+request_path,
+
+  
+  CASE
+    
+    WHEN request_referer LIKE '%https://check-the-childrens-barred-list.education.gov.uk/' THEN 'CBL Sign In Page'
+    WHEN request_referer LIKE ANY ('%ReplacingEmployerAccess%', '%https://teacherservices.education.gov.uk/Home/ReplacingEmployerAccess') THEN 'Employer Access Redirect'
+    WHEN request_referer LIKE ANY ('%http://www.check-the-childrens-barred-list.education.gov.uk/%', '%http://check-the-childrens-barred-list.education.gov.uk/%', '%https://www.check-the-childrens-barred-list.education.gov.uk/%', '%https://check-the-childrens-barred-list.education.gov.uk/result?%', '%https://check-a-teachers-record.education.gov.uk/check-records/result?%', '%https://check-a-teachers-record.education.gov.uk/check-records/feedback%') THEN 'Beyond landing page in CBL funnel'
+    WHEN request_referer LIKE '%gov.uk/' THEN 'Gov landing page'
+    WHEN request_referer LIKE ANY ('%google%',
+    '%bing%',
+    '%yahoo%',
+    '%duckduckgo%',
+    '%ecosia.com%',
+    '%yandex.com%',
+    '%aol.co.uk%',
+    '%baidu%') THEN 'Search Engine'
+    WHEN request_referer LIKE ANY ('%facebook%', '%youtube%', '%whatsapp%', '%instagram%', '%tiktok%', '%weixin.qq%', '%wechat%', '%Douyin%', '%messenger%', '%telegram.com%', '%snapchat%', '%Kuaishou%', '%Weibo %', '%twitter%', '%x.com%', 'https://t.co/', '%Pinterest%') THEN 'Social Media'
+    WHEN request_referer LIKE ANY('https://govuk-digital-services.herokuapp.com/',
+    '%tra-digital-design-history%') THEN 'UK Gov Digital page'
+    WHEN request_referer LIKE ANY ('%github%', '%<script>alert(document.domain)%', '%sandbox-32-3.reactblade.portal.azure%', '%trello.com/%', '%{%', '%}%', '\x00', 'http://interact.sh/127.0.0.1.html', 'https://statics.teams.cdn.office.net/') THEN 'DFE Internal'
+    WHEN request_referer LIKE '%becoming-a-teacher.design-history.education.gov.uk%' THEN 'Becoming a teacher design history UK GOV Page'
+    WHEN request_referer LIKE '%mail%' THEN 'Email'
+    WHEN request_referer LIKE '%antisemitism%' THEN 'Antisemitism Campaign'
+  
+    WHEN request_referer IS NULL THEN 'Not Captured'
+ 
+    ELSE 'Miscellaneous'
+END
+  AS WEB_TRAFFIC_AGGR
+FROM
+  ${ref("events_ccbl")}
+where request_path = "/sign-in"
+
