@@ -204,5 +204,55 @@ dfeAnalyticsDataform({
                 },
             ],
         },
+        {
+            entityTableName: "bulk_search_logs",
+            description: "",
+            keys: [{
+                    keyName: "dsi_user_id",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "query_count",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "result_count",
+                    dataType: "string",
+                    description: "",
+                }, {
+                    keyName: "csv",
+                    dataType: "string",
+                    description: "",
+                    hidden: true,
+                },
+            ],
+        },
+        {
+            entityTableName: "bulk_search_responses",
+            description: "",
+            keys: [{
+                    keyName: "body",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "expires_at",
+                    dataType: "date",
+                    description: "",
+                },
+                {
+                    keyName: "dsi_user_id",
+                    dataType: "string",
+                    description: "",
+                }, {
+                    keyName: "total",
+                    dataType: "string",
+                    description: "",
+                    hidden: true,
+                },
+            ],
+        },
     ],
 });
