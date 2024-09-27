@@ -134,5 +134,20 @@ dfeAnalyticsDataform({
                 },
             ],
         },
+        {
+            entityTableName: "feature_flags_features",
+            description: "",
+            keys: [{
+                    keyName: "active",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "name",
+                    dataType: "string",
+                    description: "",
+                }
+            ],
+        }
     ],
 });
