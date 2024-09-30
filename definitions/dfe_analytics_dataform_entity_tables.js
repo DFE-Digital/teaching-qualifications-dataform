@@ -214,12 +214,12 @@ dfeAnalyticsDataform({
                 },
                 {
                     keyName: "query_count",
-                    dataType: "string",
+                    dataType: "integer",
                     description: "",
                 },
                 {
                     keyName: "result_count",
-                    dataType: "string",
+                    dataType: "integer",
                     description: "",
                 }, {
                     keyName: "csv",
