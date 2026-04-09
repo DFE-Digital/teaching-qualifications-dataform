@@ -43,9 +43,7 @@ WITH
         KEY = "requestor"
         AND value = "looker_studio" ), FALSE ) AS looker_studio,
   FROM
-    `region-europe-west2`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
-  WHERE
-    DATE(creation_time) > CURRENT_DATE() - 28 ),
+    `region-europe-west2`.INFORMATION_SCHEMA.JOBS_BY_PROJECT ${when(incremental(), 'WHERE DATE(creation_time) > CURRENT_DATE - 28', '')}),
   job_table AS (
   SELECT
     *
