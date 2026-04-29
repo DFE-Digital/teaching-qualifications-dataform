@@ -71,11 +71,6 @@ dfeAnalyticsDataform({
                     hidden: true,
                 },
                 {
-                    keyName: "staff",
-                    dataType: "string",
-                    description: "",
-                },
-                {
                     keyName: "email",
                     dataType: "string",
                     description: "",
