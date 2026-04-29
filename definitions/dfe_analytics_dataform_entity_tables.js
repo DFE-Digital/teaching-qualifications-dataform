@@ -343,16 +343,19 @@ dfeAnalyticsDataform({
                     keyName: "first_name",
                     dataType: "string",
                     description: "",
+                    hidden: true
                 },
                 {
                     keyName: "last_name",
                     dataType: "string",
                     description: "",
+                    hidden: true
                 },
                 {
                     keyName: "middle_name",
                     dataType: "string",
                     description: "",
+                    hidden: true
                 },
                 {
                     keyName: "reference_number",
