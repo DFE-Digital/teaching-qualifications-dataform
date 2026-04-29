@@ -269,6 +269,108 @@ dfeAnalyticsDataform({
                     description: "",
                 }
             ],
+        },
+        {
+            entityTableName: "active_storage_attachments",
+            description: "",
+            keys: [{
+                    keyName: "blob_id",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "name",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "record_id",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "record_type",
+                    dataType: "string",
+                    description: "",
+                }
+            ],
+        },
+        {
+            entityTableName: "active_storage_blobs",
+            description: "",
+            keys: [{
+                    keyName: "byte_size",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "checksum",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "content_type",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "filename",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "key",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "metadata",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "service_name",
+                    dataType: "string",
+                    description: "",
+                }
+            ],
+        },
+
+        {
+            entityTableName: "name_changes",
+            description: "",
+            keys: [{
+                    keyName: "first_name",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "last_name",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "middle_name",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "reference_number",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "user_id",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "malware_scan_result",
+                    dataType: "string",
+                    description: "",
+                }
+            ],
         }
+
     ],
 });
