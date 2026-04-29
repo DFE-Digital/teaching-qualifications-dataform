@@ -220,8 +220,7 @@ dfeAnalyticsDataform({
                 }, {
                     keyName: "csv",
                     dataType: "string",
-                    description: "",
-                    hidden: true,
+                    description: ""
                 },
             ],
         },
@@ -276,6 +275,7 @@ dfeAnalyticsDataform({
                 {
                     keyName: "name",
                     dataType: "string",
+                    hidden: true,
                     description: "",
                 },
                 {
@@ -311,6 +311,7 @@ dfeAnalyticsDataform({
                 {
                     keyName: "filename",
                     dataType: "string",
+                    hidden: true,
                     description: "",
                 },
                 {
