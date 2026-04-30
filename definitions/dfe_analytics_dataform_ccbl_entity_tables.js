@@ -7,6 +7,7 @@ dfeAnalyticsDataform({
     bqEventsTableName: "events",
     urlRegex: "(?i)(check-the-childrens-barred-list.education.gov.uk)",
     hiddenPolicyTagLocation: "projects/teaching-qualifications/locations/europe-west2/taxonomies/5159319666739647034/policyTags/2606812594222933114",
+    expirationDays: false,
     dataSchema: [{
             entityTableName: "search_logs",
             description: "",
@@ -25,7 +26,7 @@ dfeAnalyticsDataform({
                     keyName: "date_of_birth",
                     dataType: "string",
                     description: "",
-                    hidden:true,
+                    hidden: true,
                 },
                 {
                     keyName: "result_returned",
@@ -70,15 +71,10 @@ dfeAnalyticsDataform({
                     hidden: true,
                 },
                 {
-                    keyName: "staff",
-                    dataType: "string",
-                    description: "",
-                },
-                {
                     keyName: "email",
                     dataType: "string",
                     description: "",
-                    hidden:true,
+                    hidden: true,
                 },
                 {
                     keyName: "first_name",

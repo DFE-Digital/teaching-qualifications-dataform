@@ -7,6 +7,7 @@ dfeAnalyticsDataform({
     bqEventsTableName: "events",
     urlRegex: "(?i)(check-a-teachers-record.education.gov.uk|access-your-teaching-qualifications.education.gov.uk)",
     hiddenPolicyTagLocation: "projects/teaching-qualifications/locations/europe-west2/taxonomies/5159319666739647034/policyTags/2606812594222933114",
+    expirationDays: false,
     dataSchema: [{
             entityTableName: "search_logs",
             description: "",
@@ -75,11 +76,6 @@ dfeAnalyticsDataform({
             description: "",
             keys: [{
                     keyName: "uid",
-                    dataType: "string",
-                    description: "",
-                },
-                {
-                    keyName: "staff",
                     dataType: "string",
                     description: "",
                 },
@@ -224,8 +220,7 @@ dfeAnalyticsDataform({
                 }, {
                     keyName: "csv",
                     dataType: "string",
-                    description: "",
-                    hidden: true,
+                    description: ""
                 },
             ],
         },
@@ -268,6 +263,113 @@ dfeAnalyticsDataform({
                     description: "",
                 }
             ],
+        },
+        {
+            entityTableName: "active_storage_attachments",
+            description: "",
+            keys: [{
+                    keyName: "blob_id",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "name",
+                    dataType: "string",
+                    hidden: true,
+                    description: "",
+                },
+                {
+                    keyName: "record_id",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "record_type",
+                    dataType: "string",
+                    description: "",
+                }
+            ],
+        },
+        {
+            entityTableName: "active_storage_blobs",
+            description: "",
+            keys: [{
+                    keyName: "byte_size",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "checksum",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "content_type",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "filename",
+                    dataType: "string",
+                    hidden: true,
+                    description: "",
+                },
+                {
+                    keyName: "key",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "metadata",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "service_name",
+                    dataType: "string",
+                    description: "",
+                }
+            ],
+        },
+
+        {
+            entityTableName: "name_changes",
+            description: "",
+            keys: [{
+                    keyName: "first_name",
+                    dataType: "string",
+                    description: "",
+                    hidden: true
+                },
+                {
+                    keyName: "last_name",
+                    dataType: "string",
+                    description: "",
+                    hidden: true
+                },
+                {
+                    keyName: "middle_name",
+                    dataType: "string",
+                    description: "",
+                    hidden: true
+                },
+                {
+                    keyName: "reference_number",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "user_id",
+                    dataType: "string",
+                    description: "",
+                },
+                {
+                    keyName: "malware_scan_result",
+                    dataType: "string",
+                    description: "",
+                }
+            ],
         }
+
     ],
 });
