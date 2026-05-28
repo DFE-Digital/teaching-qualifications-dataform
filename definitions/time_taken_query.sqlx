@@ -2,7 +2,7 @@ config {
     type: "table",
     description: "CTR event data with time request_paths of interest were completed unpivoted",
     columns: {
-        session_id: "Pseudo-session based on anonymised user agent and IP",
+        session_id: "Session id from session_details_check_record",
         sign_in: "Date sign in request path was returned",
         searching: "Date search request path was returned",
         result_list: "Date result request path was returned",
@@ -20,25 +20,34 @@ SELECT
   TIMESTAMP_DIFF(result_list, sign_in, SECOND) AS time_taken_sign_in_seconds
 FROM (
   SELECT
-    anonymised_user_agent_and_ip AS session_id,
-    request_path AS updated_request_path,
-    occurred_at
+    session_id,
+    REGEXP_REPLACE(
+      page.page,
+      r".*/check-records/teachers.*",
+      '/check-records/teachers'
+    ) AS updated_request_path,
+    page.page_entry_time AS occurred_at
   FROM
-    ${ref("events_check_record")}
-  WHERE request_path IN (
-    '/check-records/sign-in', -- Not using this as the main start point because someone can sign in a day before starting their search
-    '/check-records/search',  -- Use this as the journey start point
-    '/check-records/result'   -- Use this as the journey end point
+    ${ref("session_details_check_record")},
+    UNNEST(pages_visited_details) AS page
+  WHERE page.page IN (
+    '/check-records/sign-in',
+    '/check-records/search',
+    '/check-records/result'
   )
 )
 PIVOT (
   MAX(occurred_at)
   FOR updated_request_path IN (
-    '/check-records/sign-in' AS sign_in,
-    '/check-records/search' AS searching,
-    '/check-records/result' AS result_list
+    '/check-records/sign-in' AS sign_in, -- Not using this as the main start point because someone can sign in a day before starting their search
+    '/check-records/search' AS searching, -- Use this as the journey start point
+    -- '/check-records/teachers' AS teacher,
+    '/check-records/result' AS result_list -- Use this as the journey end point
   )
 )
 WHERE result_list IS NOT NULL
+  AND searching IS NOT NULL
+  AND result_list >= searching
+  AND TIMESTAMP_DIFF(result_list, searching, SECOND) BETWEEN 0 AND 3600
 ORDER BY
   time_taken_seconds DESC
