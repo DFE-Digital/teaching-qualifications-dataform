@@ -369,7 +369,34 @@ dfeAnalyticsDataform({
                     description: "",
                 }
             ],
+        }, 
+        {
+    entityTableName: "date_of_birth_changes",
+    description: "",
+    keys: [
+        {
+            keyName: "date_of_birth",
+            dataType: "string",
+            description: "",
+            hidden: true
+        },
+        {
+            keyName: "reference_number",
+            dataType: "string",
+            description: "",
+        },
+        {
+            keyName: "user_id",
+            dataType: "string",
+            description: "",
+        },
+        {
+            keyName: "malware_scan_result",
+            dataType: "string",
+            description: "",
         }
+    ],
+},
 
     ],
 });
