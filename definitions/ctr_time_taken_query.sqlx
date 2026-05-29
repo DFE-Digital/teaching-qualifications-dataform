@@ -1,0 +1,73 @@
+config {
+    type: "table",
+    description: "CTR search-to-result timing using session_details_check_record",
+    columns: {
+        session_id: "Session id from session_details_check_record",
+        searching: "Timestamp when the search page was reached",
+        result_list: "Timestamp when the next result page was reached before another search",
+        time_taken_seconds: "Time taken from search page to the next result page"
+    }
+}
+
+WITH page_events AS (
+  SELECT
+    session_id,
+    page.page,
+    page.page_entry_time
+  FROM
+    ${ref("session_details_check_record")},
+    UNNEST(pages_visited_details) AS page
+  WHERE page.page IN (
+    '/check-records/search',
+    '/check-records/result'
+  )
+),
+
+search_events AS (
+  SELECT
+    session_id,
+    page_entry_time AS searching,
+    LEAD(page_entry_time) OVER (
+      PARTITION BY session_id
+      ORDER BY page_entry_time
+    ) AS next_searching
+  FROM page_events
+  WHERE page = '/check-records/search'
+),
+
+result_events AS (
+  SELECT
+    session_id,
+    page_entry_time AS result_list
+  FROM page_events
+  WHERE page = '/check-records/result'
+),
+
+paired AS (
+  SELECT
+    s.session_id,
+    s.searching,
+    MIN(r.result_list) AS result_list
+  FROM search_events s
+  JOIN result_events r
+    ON r.session_id = s.session_id
+   AND r.result_list >= s.searching
+   AND (
+     s.next_searching IS NULL
+     OR r.result_list < s.next_searching
+   )
+  GROUP BY
+    s.session_id,
+    s.searching
+)
+
+SELECT
+  session_id,
+  searching,
+  result_list,
+  TIMESTAMP_DIFF(result_list, searching, SECOND) AS time_taken_seconds
+FROM paired
+WHERE result_list IS NOT NULL
+  AND TIMESTAMP_DIFF(result_list, searching, SECOND) > 0
+  ORDER BY
+  time_taken_seconds DESC
