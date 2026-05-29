@@ -1,53 +1,73 @@
 config {
     type: "table",
-    description: "CTR event data with time request_paths of interest were completed unpivoted",
+    description: "CTR search-to-result timing using session_details_check_record",
     columns: {
         session_id: "Session id from session_details_check_record",
-        sign_in: "Date sign in request path was returned",
-        searching: "Date search request path was returned",
-        result_list: "Date result request path was returned",
-        time_taken_seconds: "Time taken from search starting to the result list being produced",
-        time_taken_sign_in_seconds: "Time taken from sign_in to the result list being produced"
+        searching: "Timestamp when the search page was reached",
+        result_list: "Timestamp when the next result page was reached before another search",
+        time_taken_seconds: "Time taken from search page to the next result page"
     }
 }
 
-SELECT
-  session_id,
-  sign_in,
-  searching,
-  result_list,
-  TIMESTAMP_DIFF(result_list, searching, SECOND) AS time_taken_seconds,
-  TIMESTAMP_DIFF(result_list, sign_in, SECOND) AS time_taken_sign_in_seconds
-FROM (
+WITH page_events AS (
   SELECT
     session_id,
-    REGEXP_REPLACE(
-      page.page,
-      r".*/check-records/teachers.*",
-      '/check-records/teachers'
-    ) AS updated_request_path,
-    page.page_entry_time AS occurred_at
+    page.page,
+    page.page_entry_time
   FROM
     ${ref("session_details_check_record")},
     UNNEST(pages_visited_details) AS page
   WHERE page.page IN (
-    '/check-records/sign-in',
     '/check-records/search',
     '/check-records/result'
   )
+),
+
+search_events AS (
+  SELECT
+    session_id,
+    page_entry_time AS searching,
+    LEAD(page_entry_time) OVER (
+      PARTITION BY session_id
+      ORDER BY page_entry_time
+    ) AS next_searching
+  FROM page_events
+  WHERE page = '/check-records/search'
+),
+
+result_events AS (
+  SELECT
+    session_id,
+    page_entry_time AS result_list
+  FROM page_events
+  WHERE page = '/check-records/result'
+),
+
+paired AS (
+  SELECT
+    s.session_id,
+    s.searching,
+    MIN(r.result_list) AS result_list
+  FROM search_events s
+  JOIN result_events r
+    ON r.session_id = s.session_id
+   AND r.result_list >= s.searching
+   AND (
+     s.next_searching IS NULL
+     OR r.result_list < s.next_searching
+   )
+  GROUP BY
+    s.session_id,
+    s.searching
 )
-PIVOT (
-  MAX(occurred_at)
-  FOR updated_request_path IN (
-    '/check-records/sign-in' AS sign_in, -- Not using this as the main start point because someone can sign in a day before starting their search
-    '/check-records/search' AS searching, -- Use this as the journey start point
-    -- '/check-records/teachers' AS teacher,
-    '/check-records/result' AS result_list -- Use this as the journey end point
-  )
-)
+
+SELECT
+  session_id,
+  searching,
+  result_list,
+  TIMESTAMP_DIFF(result_list, searching, SECOND) AS time_taken_seconds
+FROM paired
 WHERE result_list IS NOT NULL
-  AND searching IS NOT NULL
-  AND result_list >= searching
-  AND TIMESTAMP_DIFF(result_list, searching, SECOND) BETWEEN 0 AND 3600
-ORDER BY
+  AND TIMESTAMP_DIFF(result_list, searching, SECOND) > 0
+  ORDER BY
   time_taken_seconds DESC
