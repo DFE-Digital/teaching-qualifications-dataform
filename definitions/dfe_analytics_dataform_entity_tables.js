@@ -8,6 +8,19 @@ dfeAnalyticsDataform({
     urlRegex: "(?i)(check-a-teachers-record.education.gov.uk|access-your-teaching-qualifications.education.gov.uk)",
     hiddenPolicyTagLocation: "projects/teaching-qualifications/locations/europe-west2/taxonomies/5159319666739647034/policyTags/2606812594222933114",
     expirationDays: false,
+    customEventSchema: [
+        {
+            eventType: "bulk_search_validation_error",
+            description: "Bulk search validation error event",
+            keys: [
+                {
+                    keyName: "errors",
+                    dataType: "string",
+                    description: "Validation errors returned when a bulk search upload fails validation",
+                },
+            ],
+        },
+    ],
     dataSchema: [{
             entityTableName: "search_logs",
             description: "",
