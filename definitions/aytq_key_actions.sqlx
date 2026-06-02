@@ -1,0 +1,92 @@
+config {
+    type: "table",
+    description: "AYTQ key user actions including qualification views, certificate downloads and personal detail change requests",
+    columns: {
+        action_date: "Date the action occurred",
+        action_type: "Type of user action",
+        action_count: "Number of actions performed",
+        users_count: "Number of unique users performing the action"
+    }
+}
+
+WITH qualification_views AS (
+  SELECT
+    DATE(page.page_entry_time) AS action_date,
+    'Viewed teaching qualifications' AS action_type,
+    COUNT(DISTINCT session_id) AS action_count,
+    COUNT(DISTINCT user_id) AS users_count
+  FROM
+    ${ref("session_details_teaching_qualifications")},
+    UNNEST(pages_visited_details) AS page
+  WHERE page.page IN (
+    '/qualifications',
+    '/qualifications/'
+  )
+  GROUP BY
+    action_date,
+    action_type
+),
+
+certificate_downloads AS (
+  SELECT
+    DATE(occurred_at) AS action_date,
+    'Downloaded certificate' AS action_type,
+    COUNT(*) AS action_count,
+    COUNT(DISTINCT NULLIF(request_user_id, '')) AS users_count
+  FROM
+    ${ref("events_teaching_qualifications")}
+  WHERE (
+      REGEXP_CONTAINS(request_path, r'^/qualifications/certificates/')
+      OR request_path = '/qualifications/npq_certificate'
+    )
+    AND SAFE_CAST(response_status AS INT64) BETWEEN 200 AND 299
+  GROUP BY
+    action_date,
+    action_type
+),
+
+name_change_requests AS (
+  SELECT
+    DATE(updated_at) AS action_date,
+    'Requested name change' AS action_type,
+    COUNT(*) AS action_count,
+    COUNT(DISTINCT user_id) AS users_count
+  FROM
+    ${ref("name_changes_latest_entity_tables")}
+  WHERE reference_number IS NOT NULL
+  GROUP BY
+    action_date,
+    action_type
+),
+
+date_of_birth_change_requests AS (
+  SELECT
+    DATE(updated_at) AS action_date,
+    'Requested date of birth change' AS action_type,
+    COUNT(*) AS action_count,
+    COUNT(DISTINCT user_id) AS users_count
+  FROM
+    ${ref("date_of_birth_changes_latest_entity_tables")}
+  WHERE reference_number IS NOT NULL
+  GROUP BY
+    action_date,
+    action_type
+)
+
+SELECT *
+FROM qualification_views
+
+UNION ALL
+
+SELECT *
+FROM certificate_downloads
+
+UNION ALL
+
+SELECT *
+FROM name_change_requests
+
+UNION ALL
+
+SELECT *
+FROM date_of_birth_change_requests
