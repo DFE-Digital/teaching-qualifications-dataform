@@ -1,0 +1,54 @@
+config {
+    type: "table",
+    description: "CTR session-level counts of searches and teacher records viewed",
+    columns: {
+        session_id: "Session id from session_details_check_record",
+        user_id: "Signed-in user id for the session",
+        session_start_timestamp: "Timestamp of the first page in the session",
+        final_session_page_timestamp: "Timestamp of the last page in the session",
+        searches_count: "Number of searches completed in the session",
+        records_viewed_count: "Number of distinct teacher record pages viewed in the session"
+    }
+}
+
+WITH record_views AS (
+  SELECT
+    session_id,
+    COUNT(DISTINCT page.page) AS records_viewed_count
+  FROM
+    ${ref("session_details_check_record")},
+    UNNEST(pages_visited_details) AS page
+  WHERE REGEXP_CONTAINS(page.page, r'^/check-records/teachers')
+  GROUP BY session_id
+),
+
+searches AS (
+  SELECT
+    s.session_id,
+    COUNT(*) AS searches_count
+  FROM
+    ${ref("session_details_check_record")} AS s
+  JOIN
+    ${ref("ctr_searches_by_org")} AS search
+  ON
+    s.user_id = search.dsi_user_id
+    AND search.created_at BETWEEN s.session_start_timestamp AND s.final_session_page_timestamp
+  GROUP BY s.session_id
+)
+
+SELECT
+  s.session_id,
+  s.user_id,
+  s.session_start_timestamp,
+  s.final_session_page_timestamp,
+  COALESCE(searches.searches_count, 0) AS searches_count,
+  COALESCE(record_views.records_viewed_count, 0) AS records_viewed_count
+FROM
+  ${ref("session_details_check_record")} AS s
+LEFT JOIN searches
+  ON s.session_id = searches.session_id
+LEFT JOIN record_views
+  ON s.session_id = record_views.session_id
+WHERE
+  COALESCE(searches.searches_count, 0) > 0
+  OR COALESCE(record_views.records_viewed_count, 0) > 0

@@ -1,0 +1,82 @@
+config {
+    type: "table",
+    description: "Cleaned request referrer table for CCBL sign-in page, with referrers grouped into readable traffic source labels",
+    columns: {
+        Occured_At: "Date of event",
+        request_uuid: "Request ID",
+        request_referer: "URL the user came from, null if not captured",
+        request_path: "URL the user landed on, in this case the sign-in page",
+        WEB_TRAFFIC_AGGR: "Grouped traffic source label"
+    }
+}
+
+SELECT
+  DATE(occurred_at) AS Occured_At,
+  request_uuid,
+  request_referer,
+  request_path,
+
+  CASE
+    WHEN request_referer LIKE '%check-the-childrens-barred-list.education.gov.uk/sign-in%' THEN 'CCBL Sign In Page'
+
+    WHEN request_referer LIKE ANY (
+      '%check-the-childrens-barred-list.education.gov.uk%',
+      '%check-the-childrens-barred-list.education.gov.uk/search%',
+      '%check-the-childrens-barred-list.education.gov.uk/result%',
+      '%check-the-childrens-barred-list.education.gov.uk/feedback%',
+      '%check-the-childrens-barred-list.education.gov.uk/terms-and-conditions%'
+    ) THEN 'Beyond landing page in CCBL funnel'
+
+    WHEN request_referer LIKE '%gov.uk/' THEN 'GOV.UK landing page'
+
+    WHEN request_referer LIKE ANY (
+      '%google%',
+      '%bing%',
+      '%yahoo%',
+      '%duckduckgo%',
+      '%ecosia.com%',
+      '%yandex.com%',
+      '%aol.co.uk%',
+      '%baidu%'
+    ) THEN 'Search Engine'
+
+    WHEN request_referer LIKE ANY (
+      '%facebook%',
+      '%youtube%',
+      '%whatsapp%',
+      '%instagram%',
+      '%tiktok%',
+      '%weixin.qq%',
+      '%wechat%',
+      '%Douyin%',
+      '%messenger%',
+      '%telegram.com%',
+      '%snapchat%',
+      '%Kuaishou%',
+      '%Weibo%',
+      '%twitter%',
+      '%x.com%',
+      'https://t.co/%',
+      '%Pinterest%'
+    ) THEN 'Social Media'
+
+    WHEN request_referer LIKE ANY (
+      '%github%',
+      '%trello.com/%',
+      '%statics.teams.cdn.office.net%',
+      '%sandbox-32-3.reactblade.portal.azure%',
+      '%<script>alert(document.domain)%',
+      '%{%',
+      '%}%'
+    ) THEN 'DfE Internal'
+
+    WHEN request_referer LIKE '%mail%' THEN 'Email'
+
+    WHEN request_referer IS NULL THEN 'Not Captured'
+
+    ELSE 'Miscellaneous'
+  END AS WEB_TRAFFIC_AGGR
+FROM
+  ${ref("events_ccbl")}
+WHERE
+  request_path = '/sign-in'
